@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members | Library Pro</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="main-header">
+
+    <a href="home.html" class="logo">
+        <span class="logo-icon">📚</span>
+        Library Pro
+    </a>
+
+    <nav class="main-nav">
+        <a href="home.html">Home</a>
+        <a href="books.html">Books</a>
+        <a href="loans.html">Loans</a>
+        <a href="members.html" class="active">Members</a>
+    </nav>
+
+    <a href="login.html" class="logout-link" onclick="logout()">Logout</a>
+
+</header>
+
+<main class="container">
+
+    <section class="page-hero members-hero">
+        <div>
+            <p class="eyebrow">STUDENT RECORDS</p>
+            <h1>Library Members</h1>
+            <p>
+                Register students and manage their library membership
+                information.
+            </p>
+        </div>
+    </section>
+
+    <section class="section-heading">
+        <div>
+            <h2>Manage Members</h2>
+            <p class="muted">Register and organise student records.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="showMemberForm()">
+            + Add Member
+        </button>
+    </section>
+
+    <section id="memberFormSection" class="form-panel hidden">
+
+        <h2 id="memberFormTitle">Register New Member</h2>
+
+        <form id="memberForm">
+
+            <input type="hidden" id="memberId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="memberName"
+                           placeholder="Enter student's full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Student Email</label>
+                    <input type="email" id="memberEmail"
+                           placeholder="Enter student email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="memberPhone"
+                           placeholder="Enter phone number">
+                </div>
+
+                <div class="form-group">
+                    <label>Membership Status</label>
+                    <select id="memberStatus">
+                        <option value="Active">Active</option>
+                        <option value="Suspended">Suspended</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-buttons">
+
+                <button type="submit" class="btn btn-primary">
+                    Save Details
+                </button>
+
+                <button type="button" class="btn btn-secondary"
+                        onclick="hideMemberForm()">
+                    Cancel
+                </button>
+
+            </div>
+
+            <p id="memberMessage" class="message"></p>
+
+        </form>
+    </section>
+
+    <section class="filter-panel">
+
+        <input type="text" id="memberSearch"
+               placeholder="Search by member name..."
+               oninput="displayMembers()">
+
+        <input type="email" id="memberEmailSearch"
+               placeholder="Search by student email..."
+               oninput="displayMembers()">
+
+        <select id="memberStatusFilter" onchange="displayMembers()">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+        </select>
+
+    </section>
+
+    <section class="table-container">
+
+        <h2>Registered Members</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Full Name</th>
+                    <th>Student Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="memberTableBody">
+                <!-- Member records appear here -->
+            </tbody>
+        </table>
+
+    </section>
+
+</main>
+
+<footer class="main-footer">
+    <p>© 2026 Library Pro | Terms and Conditions Apply.</p>
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
