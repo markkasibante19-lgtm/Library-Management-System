@@ -1,13 +1,16 @@
-# Library Management System
-GitHub Repository: https://github.com/markkasibante19-lgtm/Library-Management-System
-
-## Setup Instructions
-1. Start Apache and MySQL in XAMPP.
-2. Open http://localhost/phpmyadmin and create a database named `library_db`.
-3. Import the `database/library_db.sql` file.
-4. Check `config/database.php` (default is root with empty password).
-5. Go to http://localhost/library-system
-
-## Test Login
-Username: admin
-Password: admin123
+<?php
+require_once '../includes/auth_check.php'; require_once '../config/database.php';
+$id = $_GET['id'] ?? null;
+if ($id) {
+    $stmt = $pdo->prepare("SELECT book_id FROM loans WHERE id = ? AND return_date IS NULL"); $stmt->execute([$id]); $book_id = $stmt->fetchColumn();
+    if ($book_id) {
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare("UPDATE loans SET return_date = CURDATE() WHERE id = ?"); $stmt->execute([$id]);
+            $stmt = $pdo->prepare("UPDATE books SET available_copies = available_copies + 1 WHERE id = ?"); $stmt->execute([$book_id]);
+            $pdo->commit(); header("Location: index.php?msg=Returned."); exit();
+        } catch (Exception $e) { $pdo->rollBack(); header("Location: index.php?error=Failed."); exit(); }
+    }
+}
+header("Location: index.php"); exit();
+?>
