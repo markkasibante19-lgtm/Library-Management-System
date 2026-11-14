@@ -48,23 +48,15 @@ CREATE TABLE loans (
     FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
-
-//---- INSERT SAMPLE DATA ---//
-
--- Insert Default Librarian (Password is 'admin123')
--- Note: This is a hash for 'admin123' using password_hash() in PHP
 INSERT INTO users (username, password) VALUES 
-('admin', '$2y$10$e.wXq.f2D1wXq.f2D1wXq.f2D1wXq.f2D1wXq.f2D1wXq.f2D1wXq');
+('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
--- Insert Authors (5)
 INSERT INTO authors (name) VALUES 
 ('Chinua Achebe'), ('Ngugi wa Thiong\'o'), ('J.K. Rowling'), ('George Orwell'), ('Jane Austen');
 
--- Insert Categories (5)
 INSERT INTO categories (name) VALUES 
 ('African Literature'), ('Fantasy'), ('Dystopian'), ('Classic Fiction'), ('Science Fiction');
 
--- Insert Books (10)
 INSERT INTO books (title, isbn, author_id, category_id, total_copies, available_copies) VALUES
 ('Things Fall Apart', '978-0385474542', 1, 1, 5, 5),
 ('Weep Not, Child', '978-0143106692', 2, 1, 3, 3),
@@ -77,9 +69,8 @@ INSERT INTO books (title, isbn, author_id, category_id, total_copies, available_
 ('Brave New World', '978-0060850524', 4, 5, 4, 4),
 ('Sense and Sensibility', '978-0141439662', 5, 4, 2, 2);
 
--- Insert Members (10)
 INSERT INTO members (member_number, name, email, status) VALUES
-('M001', 'Moses patrick', 'Moses@example.com', 'active'),
+('M001', 'John Doe', 'john@example.com', 'active'),
 ('M002', 'Jane Smith', 'jane@example.com', 'active'),
 ('M003', 'Ali Hassan', 'ali@example.com', 'suspended'),
 ('M004', 'Mary Wanjiku', 'mary@example.com', 'active'),
@@ -90,15 +81,14 @@ INSERT INTO members (member_number, name, email, status) VALUES
 ('M009', 'James Bond', 'james@example.com', 'active'),
 ('M010', 'Lara Croft', 'lara@example.com', 'active');
 
--- Insert Loans (10) - Some returned, some out, one overdue
--- Today's date is assumed to be late 2023/2024, so we use fixed dates for the sample
 INSERT INTO loans (book_id, member_id, issue_date, due_date, return_date) VALUES
-(1, 1, '2023-10-01', '2023-10-15', '2023-10-10'), -- Returned
-(2, 2, '2023-10-05', '2023-10-19', NULL), -- Out
-(3, 3, '2023-10-10', '2023-10-24', NULL), -- Out (Overdue)
-(4, 4, '2023-10-12', '2023-10-26', '2023-10-20'), -- Returned
-(5, 5, '2023-10-15', '2023-10-29', NULL), -- Out
-(6, 1, '2023-10-18', '2023-11-01', NULL), -- Out
-(7, 6, '2023-10-20', '2023-11-03', NULL), -- Out
-(8, 7, '2023-10-21', '2023-11-04', NULL), -- Out
-(9, 8, '2023-10-22', '2023-11-05', NULL), -- Out    
+(1, 1, '2023-10-01', '2023-10-15', '2023-10-10'),
+(2, 2, '2023-10-05', '2023-10-19', NULL),
+(3, 3, '2023-10-10', '2023-10-24', NULL),
+(4, 4, '2023-10-12', '2023-10-26', '2023-10-20'),
+(5, 5, '2023-10-15', '2023-10-29', NULL),
+(6, 1, '2023-10-18', '2023-11-01', NULL),
+(7, 6, '2023-10-20', '2023-11-03', NULL),
+(8, 7, '2023-10-21', '2023-11-04', NULL),
+(9, 8, '2023-10-22', '2023-11-05', NULL),
+(10, 9, '2023-10-23', '2023-11-06', '2023-10-25');P
