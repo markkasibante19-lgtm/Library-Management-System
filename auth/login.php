@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else { $error = "Invalid username or password."; }
     } else { $error = "Please enter both fields."; }
 }
+
+$max_attempts = 5;
+$checkout_time
 ?>
 <!DOCTYPE html>
 <html lang="en">
