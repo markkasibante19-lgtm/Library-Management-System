@@ -1,16 +1,52 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once '../config/database.php';
 
-if (isset($_SESSION['user_id'])) { header("Location: ../dashboard/index.php"); exit(); }
+if (isset($_SESSION['user_id'])) {
+    header("Location: ../dashboard/index.php");
+    exit();
+}
+
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = trim($_POST['username']); $password = $_POST['password'];
-    if (!empty($username) && !empty($password)) {
+// --- RATE LIMITER LOGIC ---
+$max_attempts = 5;
+$lockout_time = 300;
+
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['last_attempt_time'] = time();
+}
+
+// Check if user is locked out
+if ($_SESSION['login_attempts'] >= $max_attempts) {
+    $time_passed = time() - $_SESSION['last_attempt_time'];
+    
+    if ($time_passed < $lockout_time) {
+        $time_left = ceil(($lockout_time - $time_passed) / 60);
+        $error = "Too many failed attempts. Please try again in $time_left minute(s).";
+    } else {
+        // Lockout expired, reset attempts
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['last_attempt_time'] = time();
+    }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
+
+    if (empty($username) || empty($password)) {
+        $error = "Please enter both username and password.";
+    } else {
         $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ?");
-        $stmt->execute([$username]); $user = $stmt->fetch();
-        
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+
         $login_success = false;
         if ($user) {
             if (password_verify($password, $user['password']) || ($username === 'admin' && $password === 'admin123')) {
@@ -19,23 +55,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         if ($login_success) {
+            // Reset attempts on successful login
+            $_SESSION['login_attempts'] = 0;
+            
             session_regenerate_id(true);
-            $_SESSION['user_id'] = $user['id']; $_SESSION['username'] = $user['username'];
-            header("Location: ../dashboard/index.php"); exit();
-        } else { $error = "Invalid username or password."; }
-    } else { $error = "Please enter both fields."; }
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            header("Location: ../dashboard/index.php");
+            exit();
+        } else {
+            // Increment attempts on failed login
+            $_SESSION['login_attempts']++;
+            $_SESSION['last_attempt_time'] = time();
+            
+            $attempts_left = $max_attempts - $_SESSION['login_attempts'];
+            if ($attempts_left > 0) {
+                $error = "Invalid username or password. You have $attempts_left attempts left.";
+            } else {
+                $error = "Too many failed attempts. You are locked out for 5 minutes.";
+            }
+        }
+    }
 }
 ?>
+    
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#145b4c" />
     <title>Login – Chapter Library</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
+    
 <body>
   <main class="page-layout">
     <section class="login-panel" aria-labelledby="welcome-title">
