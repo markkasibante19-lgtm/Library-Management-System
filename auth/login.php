@@ -78,22 +78,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
     }
 }
 ?>
-    
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#145b4c" />
     <title>Login – Chapter Library</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
     
+    <style>
+        /* Fallback styles in case style.css is not found */
+        body { margin: 0; font-family: 'DM Sans', sans-serif; background: #f8f5ef; color: #1c2520; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .page-layout { display: flex; max-width: 1100px; width: 100%; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); margin: 20px; }
+        .login-panel { flex: 1; padding: 40px; display: flex; flex-direction: column; }
+        .feature-panel { flex: 1; background: #145b4c; color: white; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; box-sizing: border-box; }
+        .submit-button { width: 100%; padding: 14px; background: #145b4c; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .alert { background: #fae6e6; color: #b5472f; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+        .library-art { width: 100%; height: auto; margin-top: 20px; }
+        .topbar { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .brand { display: flex; align-items: center; gap: 10px; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #145b4c; text-decoration: none; }
+        .brand-mark { width: 30px; height: 32px; }
+        .eyebrow { color: #6c9c89; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; margin-bottom: 10px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 36px; margin: 0 0 10px 0; color: #1c2520; }
+        .intro { color: #5a6b61; margin-bottom: 30px; line-height: 1.5; }
+        .quote-mark { font-family: 'Playfair Display', serif; font-size: 60px; line-height: 0; margin-top: 20px; display: block; color: rgba(255,255,255,0.2); }
+        .library-quote p { font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.4; margin: 10px 0; }
+        .library-quote cite { font-size: 14px; color: rgba(255,255,255,0.7); font-style: normal; }
+        .open-status { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 13px; width: fit-content; }
+        .status-dot { width: 8px; height: 8px; background: #6c9c89; border-radius: 50%; }
+        .footer { display: flex; justify-content: space-between; margin-top: auto; font-size: 13px; color: #888; padding-top: 20px; }
+        .footer nav a { color: #888; text-decoration: none; margin-left: 15px; }
+    </style>
+</head>
 <body>
   <main class="page-layout">
+    <!-- LEFT: Login Form -->
     <section class="login-panel" aria-labelledby="welcome-title">
       <header class="topbar">
         <a class="brand" href="#" aria-label="Folio home">
@@ -104,92 +129,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
           </svg>
           <span>Folio</span>
         </a>
-        <a class="help-link" href="mailto:help@foliolibrary.example">Need help?</a>
+        <a class="help-link" href="#" style="color: #5a6b61; text-decoration: none; font-size: 14px;">Need help?</a>
       </header>
 
       <div class="login-content">
         <p class="eyebrow">Member access</p>
         <h1 id="welcome-title">Welcome back.</h1>
-        <p class="intro">Sign in to manage your loans, discover new reads, and<br class="desktop-break" /> keep your personal library close.</p>
+        <p class="intro">Sign in to manage your loans, discover new reads, and keep your personal library close.</p>
 
-        <form class="login-form" action="#" method="post">
+        <?php if($error): ?><div class="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+
+        <form class="login-form" method="POST">
           <div class="form-group">
-            <label for="email">Email address</label>
-            <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Enter your username" autocomplete="username" required />
           </div>
 
-          <div class="form-group password-group">
-            <div class="label-row">
+          <div class="form-group">
+            <div class="label-row" style="display: flex; justify-content: space-between;">
               <label for="password">Password</label>
-              <a class="forgot-link" href="#forgot-password">Forgot password?</a>
+              <a class="forgot-link" href="#" style="color: #155b4c; font-size: 13px; text-decoration: none;">Forgot password?</a>
             </div>
-            <div class="password-wrap">
-              <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
-              <span class="eye-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M2.5 12s3.2-5.4 9.5-5.4 9.5 5.4 9.5 5.4-3.2 5.4-9.5 5.4S2.5 12 2.5 12Z" />
-                  <circle cx="12" cy="12" r="2.5" />
-                </svg>
-              </span>
-            </div>
+            <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
           </div>
-
-          <label class="remember-row" for="remember">
-            <input id="remember" name="remember" type="checkbox" />
-            <span class="custom-checkbox" aria-hidden="true"></span>
-            <span>Keep me signed in</span>
-          </label>
 
           <button class="submit-button" type="submit">
             <span>Sign in to your account</span>
             <span class="button-arrow" aria-hidden="true">→</span>
           </button>
         </form>
-
-        <p class="join-copy">Don't have a membership? <a href="#join">Join the library</a></p>
       </div>
 
       <footer class="footer">
-        <span>© 2026 chapter Library</span>
+        <span>© 2026 Chapter Library</span>
         <nav aria-label="Footer links">
-          <a href="#privacy">Privacy</a>
-          <a href="#terms">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
         </nav>
       </footer>
     </section>
 
-      
-    <div class="card">
-        <h2>Librarian Login</h2>
-        <?php if($error): ?><div class="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-        <form method="POST">
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-            <button type="submit" class="btn">Login</button>
-        </form>
-    </div>
-
-      
-<!-- RIGHT: library quote and illustration -->
+    <!-- RIGHT: Library quote and illustration -->
     <aside class="feature-panel" aria-label="A little inspiration from the library">
       <div class="open-status"><span class="status-dot"></span>Open today until 8 PM</div>
 
       <blockquote class="library-quote">
         <span class="quote-mark" aria-hidden="true">“</span>
-        <p>A library is not a luxury,<br class="quote-break" /> but one of the necessities<br class="quote-break" /> of life.</p>
+        <p>A library is not a luxury, but one of the necessities of life.</p>
         <cite>— Henry Ward Beecher</cite>
       </blockquote>
 
       <svg class="library-art" viewBox="0 0 700 330" role="img" aria-label="A reader enjoying a book beside a lamp and shelves of books">
-          
-        <!-- lamp -->
         <g class="lamp">
           <path d="M65 105c7-9 45-9 53 0l14 31c2 4-2 7-6 7H57c-4 0-8-3-6-7z" fill="#efb258" />
           <path d="M111 143v99" stroke="#e9c77f" stroke-width="4" />
           <path d="M48 250h88c-4-9-12-14-23-14H70c-10 0-18 5-22 14Z" fill="#e9c77f" />
         </g>
-
-        <!-- back shelf and books -->
         <g class="shelves">
           <rect x="405" y="112" width="242" height="7" rx="1" fill="#e9ddb8" />
           <rect x="425" y="34" width="30" height="70" rx="2" fill="#a8583d" />
@@ -202,7 +197,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
           <path d="M534 59h29M534 90h29" stroke="#9db5a4" stroke-width="2" />
           <rect x="570" y="34" width="29" height="70" rx="2" fill="#dc805f" />
           <path d="M570 46h29M570 77h29" stroke="#f0a181" stroke-width="2" />
-
           <rect x="374" y="219" width="273" height="7" rx="1" fill="#e9ddb8" />
           <rect x="394" y="155" width="29" height="54" rx="2" fill="#df8060" />
           <path d="M394 167h29M394 194h29" stroke="#f2a58a" stroke-width="2" />
@@ -215,8 +209,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
           <rect x="538" y="155" width="29" height="54" rx="2" fill="#d79a40" />
           <path d="M538 167h29M538 194h29" stroke="#f0bd68" stroke-width="2" />
         </g>
-
-        <!-- seated reader -->
         <g class="reader">
           <path d="M192 247c0-74 12-105 69-105s70 31 70 105v8H192z" fill="#d98662" />
           <path d="M250 119c-1 16 1 30 13 33 13 4 27-5 29-19l3-20z" fill="#c97855" />
@@ -225,8 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
           <path d="M248 187c0-6 4-10 10-10l66-7c8-1 13 3 12 11l-2 38c0 8-4 12-12 13l-64 6c-6 1-10-3-10-9z" fill="#f1e8d4" />
           <path d="M248 178v58" stroke="#d7cbb2" stroke-width="2" />
         </g>
-
-        <!-- front desk -->
         <path d="M37 258h332c5 0 9 4 9 9v9H28v-9c0-5 4-9 9-9Z" fill="#e9c77f" />
         <path d="M404 225h40l-8 42h-25z" fill="#b86145" />
       </svg>
