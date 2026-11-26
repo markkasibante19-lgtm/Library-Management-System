@@ -1,14 +1,14 @@
-
 <?php
 require_once '../includes/auth_check.php'; 
 require_once '../config/database.php';
 
-$id = $_GET['id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+    $id = $_POST['id'] ?? null;
 
 if ($id) {
     // Rule 6: Check if the member has unreturned books
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM loans WHERE member_id = ? AND return_date IS NULL");
-    $stmt->execute([$id]);
+    $stmt->execute([$id]); {
     
     if ($stmt->fetchColumn() > 0) {
         // Friendly error if they have active loans
@@ -28,6 +28,10 @@ if ($id) {
         exit();
     }
 }
-header("Location: index.php");
-exit();
+} else {
+    // If someone tries to access this file directly via URL, block them
+    header("Location: index.php?error=Invalid security token.");
+    exit();
+}
+
 ?>
