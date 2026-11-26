@@ -14,27 +14,24 @@ $error = '';
 
 // --- RATE LIMITER LOGIC ---
 $max_attempts = 5;
-$lockout_time = 300;
+$lockout_time = 300; // 5 minutes
 
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = 0;
     $_SESSION['last_attempt_time'] = time();
 }
 
-// Check if user is locked out
 if ($_SESSION['login_attempts'] >= $max_attempts) {
     $time_passed = time() - $_SESSION['last_attempt_time'];
-    
     if ($time_passed < $lockout_time) {
         $time_left = ceil(($lockout_time - $time_passed) / 60);
         $error = "Too many failed attempts. Please try again in $time_left minute(s).";
     } else {
-        // Lockout expired, reset attempts
         $_SESSION['login_attempts'] = 0;
         $_SESSION['last_attempt_time'] = time();
     }
 }
-
+// --------------------------
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
     $username = trim($_POST['username']);
@@ -49,25 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
 
         $login_success = false;
         if ($user) {
-            if (password_verify($password, $user['password']) || ($username === 'admin' && $password === 'admin123')) {
+            if (password_verify($password, $user['password'])) {
                 $login_success = true;
             }
         }
 
         if ($login_success) {
-            // Reset attempts on successful login
             $_SESSION['login_attempts'] = 0;
-            
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             header("Location: ../dashboard/index.php");
             exit();
         } else {
-            // Increment attempts on failed login
             $_SESSION['login_attempts']++;
             $_SESSION['last_attempt_time'] = time();
-            
             $attempts_left = $max_attempts - $_SESSION['login_attempts'];
             if ($attempts_left > 0) {
                 $error = "Invalid username or password. You have $attempts_left attempts left.";
@@ -78,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($error)) {
     }
 }
 ?>
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
