@@ -28,6 +28,11 @@ $books = $stmt->fetchAll();
 $all_categories = $pdo->query("SELECT * FROM categories")->fetchAll();
 $all_authors = $pdo->query("SELECT * FROM authors")->fetchAll();
 
+// Add this before require_once '../includes/header.php';
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once '../includes/header.php';
 ?>
 
@@ -63,12 +68,16 @@ require_once '../includes/header.php';
                 <td><span class="chip <?= $b['available_copies'] > 0 ? 'is-ok' : 'is-danger' ?>"><?= $b['available_copies'] ?> / <?= $b['total_copies'] ?></span></td>
                 <td>
                     <a href="edit.php?id=<?= $b['id'] ?>" style="color: var(--green); font-weight: 500; margin-right: 12px;">Edit</a>
-                    <a href="delete.php?id=<?= $b['id'] ?>" style="color: var(--warn); font-weight: 500;" onclick="return confirm('Delete this book?')">Delete</a>
+ 
+                    <form method="POST" action="delete.php" style="display:inline;" onsubmit="return confirm('Delete this book?');">
+        <input type="hidden" name="id" value="<?= $b['id'] ?>">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+        <button type="submit" style="background:none; border:none; color:var(--warn); font-weight:500; cursor:pointer; padding:0;">Delete</button>
+    </form>
                 </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-<?php require_once '../includes/footer.php'; ?><?php'; ?
->
+<?php require_once '../includes/footer.php'; ?>
