@@ -28,3 +28,10 @@ require_once '../includes/header.php'; require_once '../includes/navbar.php';
 ?>
 <div class="container mt-4"><div class="card shadow-sm mx-auto" style="max-width: 600px;"><div class="card-body">
     <?php if($error): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
+    <form method="POST">
+        <div class="mb-3"><label>Member</label><select name="member_id" class="form-select" required><option value="">Choose...</option><?php foreach($members as $m) echo "<option value='{$m['id']}'>{$m['name']} ({$m['status']})</option>"; ?></select></div>
+        <div class="mb-3"><label>Book</label><select name="book_id" class="form-select" required><option value="">Choose...</option><?php foreach($books as $b) echo "<option value='{$b['id']}'>{$b['title']} (Avail: {$b['available_copies']})</option>"; ?></select></div>
+        <button type="submit" class="btn btn-primary w-100">Issue</button>
+    </form>
+</div></div></div>
+<?php require_once '../includes/footer.php'; ?>
